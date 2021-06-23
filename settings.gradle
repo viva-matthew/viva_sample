@@ -1,0 +1,2 @@
+rootProject.name = "viva_sample"
+include ':app'
