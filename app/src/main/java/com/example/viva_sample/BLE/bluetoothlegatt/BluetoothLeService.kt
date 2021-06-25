@@ -6,7 +6,10 @@ import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import android.util.Log
+import com.orhanobut.logger.Logger
+import java.nio.ByteBuffer
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Service for managing connection and data communication with a GATT server hosted on a
@@ -18,6 +21,8 @@ class BluetoothLeService : Service() {
     private var mBluetoothDeviceAddress: String? = null
     private var mBluetoothGatt: BluetoothGatt? = null
     private var mConnectionState = STATE_DISCONNECTED
+    private val photoByteList: ArrayList<Int> = arrayListOf()
+    private var isStream = true
 
     // Implements callback methods for GATT events that the app cares about.  For example,
     // connection change and services discovered.
@@ -82,37 +87,73 @@ class BluetoothLeService : Service() {
     ) {
         val intent = Intent(action)
 
+
         // This is special handling for the Heart Rate Measurement profile.  Data parsing is
         // carried out as per profile specifications:
         // http://developer.bluetooth.org/gatt/characteristics/Pages/CharacteristicViewer.aspx?u=org.bluetooth.characteristic.heart_rate_measurement.xml
-        if (UUID_HEART_RATE_MEASUREMENT == characteristic.uuid) {
+        if (UUID.fromString(SampleGattAttributes.HM_RX_TX) == characteristic.uuid && isStream) {
             val flag = characteristic.properties
             var format = -1
             if (flag and 0x01 != 0) {
                 format = BluetoothGattCharacteristic.FORMAT_UINT16
-                Log.d(TAG, "Heart rate format UINT16.")
+//                Log.d(TAG, "Heart rate format UINT16.")
             } else {
                 format = BluetoothGattCharacteristic.FORMAT_UINT8
-                Log.d(TAG, "Heart rate format UINT8.")
+//                Log.d(TAG, "Heart rate format UINT8.")
             }
-            val heartRate = characteristic.getIntValue(format, 1)
-            Log.d(TAG, String.format("Received heart rate: %d", heartRate))
-            intent.putExtra(EXTRA_DATA, heartRate.toString())
+
+
+            //var testList : ByteArray = byteArrayOf()
+
+            // 20개씩 전부 리스트에 담는다.
+            for (i in characteristic.value.indices) {
+                characteristic.getIntValue(format, i)
+                photoByteList.add(characteristic.getIntValue(format, i))
+            }
+
+
+            // 스탑코드가 들어올 경우
+            if (photoByteList[photoByteList.lastIndex] == 217 && photoByteList[photoByteList.lastIndex - 1] == 255) {
+                Logger.d("## 마지막")
+                Logger.d("## photoByteList ==> ${photoByteList.size}")
+                isStream = false
+            }
+
+
+            //var photoByteList2 : ByteArray = byteArrayOf()
+            //photoByteList2 = pho
+
+//            val bytes = photoByteList.toList() as Array<Byte>
+            //          Logger.d("## bytes ==> ${bytes}")
+
+
+            //intent.putExtra(EXTRA_DATA, characteristic.value)
+            if (!isStream) {
+                intent.putIntegerArrayListExtra(EXTRA_DATA, photoByteList)
+                sendBroadcast(intent)
+            }
+
+            //intent.putExtra(EXTRA_DATA, testList)
+
+            //Logger.d("## photoByteList ==> ${photoByteList}")
+            //Logger.d("## photoByteList ==> ${photoByteList.size}")
+
         } else {
             // For all other profiles, writes the data formatted in HEX.
             val data = characteristic.value
             if (data != null && data.size > 0) {
                 val stringBuilder = StringBuilder(data.size)
                 for (byteChar in data) stringBuilder.append(String.format("%02X ", byteChar))
-                intent.putExtra(
-                    EXTRA_DATA, """
-     ${String(data)}
-     $stringBuilder
-     """.trimIndent()
-                )
+                intent.putExtra(EXTRA_DATA, """${String(data)}$stringBuilder""".trimIndent())
             }
         }
-        sendBroadcast(intent)
+
+    }
+
+    private fun intToBytes(i: Int): ByteArray? {
+        val bb: ByteBuffer = ByteBuffer.allocate(4)
+        bb.putInt(i)
+        return bb.array()
     }
 
     inner class LocalBinder : Binder() {
@@ -236,7 +277,23 @@ class BluetoothLeService : Service() {
             return
         }
         mBluetoothGatt!!.readCharacteristic(characteristic)
+        Logger.d("## readCharacteristic")
     }
+
+    /**
+     * Write to a given char
+     * @param characteristic The characteristic to write to
+     */
+    fun writeCharacteristic(characteristic: BluetoothGattCharacteristic?) {
+        // int to uINT8
+        Log.d(TAG, "BluetoothLeService:writeCharacteristic")
+        if (mBluetoothAdapter == null || mBluetoothGatt == null) {
+            Log.w(TAG, "BluetoothAdapter not initialized")
+            return
+        }
+        mBluetoothGatt!!.writeCharacteristic(characteristic)
+    }
+
 
     /**
      * Enables or disables notification on a give characteristic.
@@ -248,6 +305,7 @@ class BluetoothLeService : Service() {
         characteristic: BluetoothGattCharacteristic,
         enabled: Boolean
     ) {
+        Logger.d("## setCharacteristicNotification")
         if (mBluetoothAdapter == null || mBluetoothGatt == null) {
             Log.w(TAG, "BluetoothAdapter not initialized")
             return
@@ -286,5 +344,6 @@ class BluetoothLeService : Service() {
         const val EXTRA_DATA = "com.example.bluetooth.le.EXTRA_DATA"
         val UUID_HEART_RATE_MEASUREMENT =
             UUID.fromString(SampleGattAttributes.HEART_RATE_MEASUREMENT)
+        val UUID_HM_RX_TX = UUID.fromString(SampleGattAttributes.HM_RX_TX)
     }
 }

@@ -23,6 +23,9 @@ import java.util.*
 object SampleGattAttributes {
     private val attributes: HashMap<String?, String?> = HashMap<String?, String?>()
 
+    // HM-10 기기에서 읽고 쓰기 위한 서비스3 UUID
+    var HM_RX_TX = "0000ffe1-0000-1000-8000-00805f9b34fb"
+
     var HEART_RATE_MEASUREMENT = "00002a37-0000-1000-8000-00805f9b34fb"
     var CLIENT_CHARACTERISTIC_CONFIG = "00002902-0000-1000-8000-00805f9b34fb"
     fun lookup(uuid: String?, defaultName: String): String {

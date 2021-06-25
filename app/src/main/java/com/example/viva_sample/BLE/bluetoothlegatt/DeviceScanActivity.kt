@@ -42,6 +42,8 @@ class DeviceScanActivity : ListActivity() {
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     override fun onCreate(savedInstanceState: Bundle?) {
         Logger.d("## test1!!")
+
+
         super.onCreate(savedInstanceState)
 
 
@@ -168,6 +170,7 @@ class DeviceScanActivity : ListActivity() {
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     override fun onListItemClick(l: ListView?, v: View?, position: Int, id: Long) {
+        Logger.d("## onListItemClick")
         val device: BluetoothDevice = mLeDeviceListAdapter.getDevice(position)
         val intent = Intent(this, DeviceControlActivity::class.java)
         val deviceControlActivity = DeviceControlActivity()
@@ -185,10 +188,8 @@ class DeviceScanActivity : ListActivity() {
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     private fun scanLeDevice(enable: Boolean) {
         if (enable) {
-            Logger.d("## scanLeDevice ==> $enable")
             // 스캔 주기가 지나면 스캔을 중단함
             mHandler!!.postDelayed({
-                Logger.d("## mHandler scanLeDevice ==> $enable")
                 mScanning = false
                 mBluetoothAdapter.stopLeScan(mLeScanCallback)
                 invalidateOptionsMenu() // onCreateOptionsMenu 메소드 재 호출
@@ -197,7 +198,6 @@ class DeviceScanActivity : ListActivity() {
             mScanning = true
             mBluetoothAdapter.startLeScan(mLeScanCallback)
         } else {
-            Logger.d("## scanLeDevice ==> $enable")
             // 스캔 정지
             mScanning = false
             mBluetoothAdapter.stopLeScan(mLeScanCallback)
@@ -207,10 +207,11 @@ class DeviceScanActivity : ListActivity() {
 
     private inner class LeDeviceListAdapter : BaseAdapter() {
         private val mLeDevices: ArrayList<BluetoothDevice> = ArrayList()
-        //private val mInflator: LayoutInflater = this@DeviceScanActivity.layoutInflater
+
         fun addDevice(device: BluetoothDevice) {
             if (!mLeDevices.contains(device)) {
                 Logger.d("## device ==> " + device.address)
+                Logger.d("## device ==> " + device.name)
                 mLeDevices.add(device)
             }
         }
@@ -240,7 +241,8 @@ class DeviceScanActivity : ListActivity() {
             val viewHolder: ViewHolder
 
             if (view == null) {
-                view = LayoutInflater.from(viewGroup.context).inflate(R.layout.listitem_device, null)
+                view =
+                    LayoutInflater.from(viewGroup.context).inflate(R.layout.listitem_device, null)
                 viewHolder = ViewHolder()
                 viewHolder.deviceAddress = view.findViewById<View>(R.id.device_address) as TextView
                 viewHolder.deviceName = view.findViewById<View>(R.id.device_name) as TextView
@@ -262,9 +264,7 @@ class DeviceScanActivity : ListActivity() {
     // scanLeDevice 함수가 끝나고 스캔하여 결과를 처리하는 콜백함수
     private val mLeScanCallback =
         LeScanCallback { device, rssi, scanRecord ->
-            Logger.d("## mLeScanCallback LeScanCallback")
             runOnUiThread {
-                Logger.d("## mLeScanCallback runOnUiThread")
                 mLeDeviceListAdapter.addDevice(device)
                 mLeDeviceListAdapter.notifyDataSetChanged()
             }
