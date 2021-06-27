@@ -4,8 +4,9 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
-import com.example.viva_sample.BLE.bluetoothlegatt.DeviceScanActivity
+import com.example.viva_sample.BLE.ble.DeviceScanActivity
 import com.example.viva_sample.stt.SttActivity
+import com.example.viva_sample.tts.TtsActivity
 import xyz.arpith.blearduino.R
 import xyz.arpith.blearduino.databinding.ActivityMainBinding
 
@@ -30,6 +31,11 @@ class MainActivity : AppCompatActivity() {
 
         binding.btnSTT.setOnClickListener {
             val intent = Intent(this, SttActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.btnTTS.setOnClickListener {
+            val intent = Intent(this, TtsActivity::class.java)
             startActivity(intent)
         }
     }

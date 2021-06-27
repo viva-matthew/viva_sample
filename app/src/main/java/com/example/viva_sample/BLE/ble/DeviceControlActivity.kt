@@ -1,4 +1,4 @@
-package com.example.viva_sample.BLE.bluetoothlegatt
+package com.example.viva_sample.BLE.ble
 
 import android.app.Activity
 import android.bluetooth.BluetoothGattCharacteristic
@@ -16,7 +16,10 @@ import androidx.databinding.DataBindingUtil
 import com.orhanobut.logger.Logger
 import xyz.arpith.blearduino.R
 import xyz.arpith.blearduino.databinding.ActivityDeviceControlBinding
+import java.nio.Buffer
+import java.nio.ByteBuffer
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class DeviceControlActivity : Activity() {
@@ -117,15 +120,20 @@ class DeviceControlActivity : Activity() {
 //                val bytes =
 //                    ConstantFunction.encodeToBase64(mBitmapArray.get(i).getUploadImageBitmap(), Bitmap.CompressFormat.JPEG, 100)
 //                ImageData
+                val result: ArrayList<Int> = intent.getIntegerArrayListExtra(BluetoothLeService.EXTRA_DATA)
+                val buffer: ByteBuffer = ByteBuffer.allocate(result.size)
+
+                for (byt in result) {
+                    buffer.put(byt.toByte())
+                }
+
+                // 버퍼, 넓이, 높이
+                // getBitmap(buffer, 0, 0)
 
 
 
                 intent.getIntegerArrayListExtra(BluetoothLeService.EXTRA_DATA).let {
                     //binding.ivBleImage.setImageBitmap(toByteArray().toBitmap())
-                }
-                intent.getStringExtra(BluetoothLeService.EXTRA_DATA).let {
-                    //binding.ivBleImage.setImageBitmap(toByteArray().toBitmap())
-
                 }
 
 
@@ -165,7 +173,6 @@ class DeviceControlActivity : Activity() {
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE)
 
         mBtnSend!!.setOnClickListener {
-            //sendDataToBLE("read\n")
             sendCommandToBLE("read\n")
         }
 
@@ -345,4 +352,42 @@ class DeviceControlActivity : Activity() {
         return BitmapFactory.decodeByteArray(this, 0, size)
     }
 
+    // 버퍼 받아서 이미지뷰에 넣어보
+    private fun getBitmap(buffer: Buffer, width: Int, height: Int): Bitmap? {
+        buffer.rewind()
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        bitmap.copyPixelsFromBuffer(buffer)
+
+//        binding.ivBleImage.setImageBitmap(bitmap)
+
+        return bitmap
+
+    }
+
+    // 바이트어레이 합치
+    // 20개씪 들어오는걸 기존거와 계속 합친다 마지막 신호가 오기전까지..
+    // 다 합쳐졌을경우 바이트어레이를 액티비티에 넘기고
+    fun mergeByteData(src: ByteArray?, obj: ByteArray?): ByteArray? {
+        if (src == null || src.size < 0) return obj
+        if (obj == null || obj.size < 0) return src
+        val data = ByteArray(src.size + obj.size)
+        System.arraycopy(src, 0, data, 0, src.size)
+        System.arraycopy(obj, 0, data, src.size, obj.size)
+        return data
+    } /*w  w w  .jav  a  2  s  .  co m*/
+
+    fun byteArrayToBitmap(byteArray: ByteArray) : Bitmap {
+
+        var bitmap = BitmapFactory.decodeByteArray(byteArray, 0,byteArray.size)
+        // binding.ivBleImage.setImageBitmap(bitmap)
+        return bitmap
+    }
+
+
+
+
+    // png로 변경 참고 사이트
+// https://stackoverflow.com/questions/20656649/how-to-convert-bitmap-to-png-and-then-to-base64-in-android
+    // bitmap to string 등등
+    //https://youngest-programming.tistory.com/95
 }

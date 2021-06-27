@@ -20,9 +20,10 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.Viva_sample">
-        <activity android:name="com.example.viva_sample.stt.SttActivity"></activity>
+        <activity android:name="com.example.viva_sample.tts.TtsActivity"></activity>
+        <activity android:name="com.example.viva_sample.stt.SttActivity" />
         <activity
-            android:name="com.example.viva_sample.BLE.bluetoothlegatt.DeviceControlActivity"
+            android:name="com.example.viva_sample.BLE.ble.DeviceControlActivity"
             android:theme="@android:style/Theme.Material.Light.DarkActionBar" />
         <activity android:name="com.example.viva_sample.MainActivity">
             <intent-filter>
@@ -32,11 +33,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:theme="@android:style/Theme.Material.Light.DarkActionBar"
-            android:name="com.example.viva_sample.BLE.bluetoothlegatt.DeviceScanActivity" />
+            android:name="com.example.viva_sample.BLE.ble.DeviceScanActivity"
+            android:theme="@android:style/Theme.Material.Light.DarkActionBar" />
 
         <service
-            android:name="com.example.viva_sample.BLE.bluetoothlegatt.BluetoothLeService"
+            android:name="com.example.viva_sample.BLE.ble.BluetoothLeService"
             android:enabled="true" />
     </application>
 

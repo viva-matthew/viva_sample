@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.viva_sample.BLE.bluetoothlegatt
+package com.example.viva_sample.BLE.ble
 
 import java.util.*
 

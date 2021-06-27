@@ -1,4 +1,4 @@
-package com.example.viva_sample.BLE.bluetoothlegatt
+package com.example.viva_sample.BLE.ble
 
 import android.Manifest
 import android.app.ListActivity
@@ -41,9 +41,6 @@ class DeviceScanActivity : ListActivity() {
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     override fun onCreate(savedInstanceState: Bundle?) {
-        Logger.d("## test1!!")
-
-
         super.onCreate(savedInstanceState)
 
 
@@ -54,20 +51,11 @@ class DeviceScanActivity : ListActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
 
 
-        // Here, thisActivity is the current activity
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.READ_CONTACTS
-            )
-            !== PackageManager.PERMISSION_GRANTED
-        ) {
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) !== PackageManager.PERMISSION_GRANTED) {
 
             // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.READ_CONTACTS
-                )
-            ) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CONTACTS)) {
 
             } else {
 
@@ -82,8 +70,6 @@ class DeviceScanActivity : ListActivity() {
 
 
         mHandler = Handler()
-
-        Logger.d("## DeviceScanActivity onCreate")
 
         // 블루투스가 BLE를 지원하는지 검사
         if (!packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
@@ -170,7 +156,6 @@ class DeviceScanActivity : ListActivity() {
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     override fun onListItemClick(l: ListView?, v: View?, position: Int, id: Long) {
-        Logger.d("## onListItemClick")
         val device: BluetoothDevice = mLeDeviceListAdapter.getDevice(position)
         val intent = Intent(this, DeviceControlActivity::class.java)
         val deviceControlActivity = DeviceControlActivity()
@@ -210,8 +195,6 @@ class DeviceScanActivity : ListActivity() {
 
         fun addDevice(device: BluetoothDevice) {
             if (!mLeDevices.contains(device)) {
-                Logger.d("## device ==> " + device.address)
-                Logger.d("## device ==> " + device.name)
                 mLeDevices.add(device)
             }
         }

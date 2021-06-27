@@ -28,8 +28,6 @@ class SttActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_stt)
-
         binding.lifecycleOwner = this
 
         if (Build.VERSION.SDK_INT >= 23) { // 퍼미션 체크

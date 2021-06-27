@@ -25,6 +25,15 @@
 
         </Button>
 
+        <Button
+            android:id="@+id/btnTTS"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:text="TTS">
+
+        </Button>
+
+
     </LinearLayout>
 
 </layout>

@@ -1,4 +1,4 @@
-package com.example.viva_sample.BLE.bluetoothlegatt
+package com.example.viva_sample.BLE.ble
 
 import android.app.Service
 import android.bluetooth.*
@@ -99,24 +99,28 @@ class BluetoothLeService : Service() {
 //                Log.d(TAG, "Heart rate format UINT16.")
             } else {
                 format = BluetoothGattCharacteristic.FORMAT_UINT8
-//                Log.d(TAG, "Heart rate format UINT8.")
-            }
+
+                // 20개씩 전부 리스트에 담는다.
+                for (i in characteristic.value.indices) {
+                    characteristic.getIntValue(format, i)
+                    photoByteList.add(characteristic.getIntValue(format, i))
+                }
 
 
-            //var testList : ByteArray = byteArrayOf()
+                // 스탑코드가 들어올 경우
+                if (photoByteList[photoByteList.lastIndex] == 217 && photoByteList[photoByteList.lastIndex - 1] == 255) {
+                    Logger.d("## 마지막")
+                    Logger.d("## photoByteList ==> ${photoByteList.size}")
+                    isStream = false
 
-            // 20개씩 전부 리스트에 담는다.
-            for (i in characteristic.value.indices) {
-                characteristic.getIntValue(format, i)
-                photoByteList.add(characteristic.getIntValue(format, i))
-            }
+                    // 끝에 두개 자르기
+                    photoByteList.subList(0, photoByteList.lastIndex-2)
+                }
 
-
-            // 스탑코드가 들어올 경우
-            if (photoByteList[photoByteList.lastIndex] == 217 && photoByteList[photoByteList.lastIndex - 1] == 255) {
-                Logger.d("## 마지막")
-                Logger.d("## photoByteList ==> ${photoByteList.size}")
-                isStream = false
+                if (!isStream) {
+                    intent.putIntegerArrayListExtra(EXTRA_DATA, photoByteList)
+                    sendBroadcast(intent)
+                }
             }
 
 
@@ -128,10 +132,7 @@ class BluetoothLeService : Service() {
 
 
             //intent.putExtra(EXTRA_DATA, characteristic.value)
-            if (!isStream) {
-                intent.putIntegerArrayListExtra(EXTRA_DATA, photoByteList)
-                sendBroadcast(intent)
-            }
+
 
             //intent.putExtra(EXTRA_DATA, testList)
 
