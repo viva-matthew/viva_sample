@@ -30,7 +30,7 @@ object SampleGattAttributes {
     val HM_RX = "0000FFE1-1218-1000-8000-00805F9B34FB"
     val HM_TX = "0000FFE3-1218-1000-8000-00805F9B34FB"
 
-    var test = ""
+    var test = "2"
     var HEART_RATE_MEASUREMENT = "00002a37-0000-1000-8000-00805f9b34fb"
     var CLIENT_CHARACTERISTIC_CONFIG = "00002902-0000-1000-8000-00805f9b34fb"
     fun lookup(uuid: String?, defaultName: String): String {
