@@ -9,7 +9,6 @@ import android.util.Log
 import com.orhanobut.logger.Logger
 import java.nio.ByteBuffer
 import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * Service for managing connection and data communication with a GATT server hosted on a
@@ -23,6 +22,7 @@ class BluetoothLeService : Service() {
     private var mConnectionState = STATE_DISCONNECTED
     private val photoByteList: ArrayList<Int> = arrayListOf()
     private var isStream = true
+    var org: ByteArray? = null
 
     // Implements callback methods for GATT events that the app cares about.  For example,
     // connection change and services discovered.
@@ -81,10 +81,7 @@ class BluetoothLeService : Service() {
         sendBroadcast(intent)
     }
 
-    private fun broadcastUpdate(
-        action: String,
-        characteristic: BluetoothGattCharacteristic
-    ) {
+    private fun broadcastUpdate(action: String, characteristic: BluetoothGattCharacteristic) {
         val intent = Intent(action)
 
 
@@ -100,62 +97,75 @@ class BluetoothLeService : Service() {
             } else {
                 format = BluetoothGattCharacteristic.FORMAT_UINT8
 
+
                 // 20개씩 전부 리스트에 담는다.
                 for (i in characteristic.value.indices) {
                     characteristic.getIntValue(format, i)
                     photoByteList.add(characteristic.getIntValue(format, i))
-                }
 
+                }
+                org = mergeByteData(org, characteristic.value)
+                Logger.d("## org ==> ${org?.size}")
 
                 // 스탑코드가 들어올 경우
-                if (photoByteList[photoByteList.lastIndex] == 217 && photoByteList[photoByteList.lastIndex - 1] == 255) {
+                var slice: ByteArray? = null
+
+                var lastValue = 217 // -39
+                var lastValue2 = 255 // -1
+
+
+                if (photoByteList[photoByteList.lastIndex] == 217 && photoByteList[photoByteList.lastIndex - 1] == 255 && characteristic.value.size < 20) {
+//                if (org?.let { org!![it.lastIndex] } == lastValue.toByte() && org?.let { org!![it.lastIndex-1] } == lastValue2.toByte()) {
                     Logger.d("## 마지막")
                     Logger.d("## photoByteList ==> ${photoByteList.size}")
+                    Logger.d("## photoByteList ==> ${photoByteList[photoByteList.lastIndex]}")
+                    Logger.d("## photoByteList ==> ${photoByteList[photoByteList.lastIndex-1]}")
+                    Logger.d("## org ==> ${org?.let { org!!.get(it.lastIndex) }}")
+                    Logger.d("## org ==> ${org?.get(org!!.lastIndex-1)}")
+
                     isStream = false
 
-                    // 끝에 두개 자르기
-                    photoByteList.subList(0, photoByteList.lastIndex-2)
-                }
+                    //slice = org?.lastIndex?.minus(1)?.let { Arrays.copyOfRange(org, 0, it) }!!
+                    slice = org?.let {
+                        Logger.d("## slice ==> ${it[it.lastIndex-2]}")
+                        Arrays.copyOfRange(org, 0, it.lastIndex-1)
+                    }
+                    Logger.d("## slice ==> ${slice?.get(slice.lastIndex)}")
 
+                }
                 if (!isStream) {
-                    intent.putIntegerArrayListExtra(EXTRA_DATA, photoByteList)
+                    intent.putExtra(EXTRA_DATA, slice)
                     sendBroadcast(intent)
                 }
             }
 
 
-            //var photoByteList2 : ByteArray = byteArrayOf()
-            //photoByteList2 = pho
-
-//            val bytes = photoByteList.toList() as Array<Byte>
-            //          Logger.d("## bytes ==> ${bytes}")
-
-
-            //intent.putExtra(EXTRA_DATA, characteristic.value)
-
-
-            //intent.putExtra(EXTRA_DATA, testList)
-
-            //Logger.d("## photoByteList ==> ${photoByteList}")
-            //Logger.d("## photoByteList ==> ${photoByteList.size}")
-
-        } else {
-            // For all other profiles, writes the data formatted in HEX.
-            val data = characteristic.value
-            if (data != null && data.size > 0) {
-                val stringBuilder = StringBuilder(data.size)
-                for (byteChar in data) stringBuilder.append(String.format("%02X ", byteChar))
-                intent.putExtra(EXTRA_DATA, """${String(data)}$stringBuilder""".trimIndent())
-            }
         }
+//        else {
+//            // For all other profiles, writes the data formatted in HEX.
+//            val data = characteristic.value
+//            if (data != null && data.size > 0) {
+//                val stringBuilder = StringBuilder(data.size)
+//                for (byteChar in data) stringBuilder.append(String.format("%02X ", byteChar))
+//                intent.putExtra(EXTRA_DATA, """${String(data)}$stringBuilder""".trimIndent())
+//            }
+//        }
 
     }
 
-    private fun intToBytes(i: Int): ByteArray? {
-        val bb: ByteBuffer = ByteBuffer.allocate(4)
-        bb.putInt(i)
-        return bb.array()
-    }
+    // 바이트어레이 합치
+    // 20개씪 들어오는걸 기존거와 계속 합친다 마지막 신호가 오기전까지..
+    // 다 합쳐졌을경우 바이트어레이를 액티비티에 넘기고
+    fun mergeByteData(src: ByteArray?, obj: ByteArray?): ByteArray? {
+        if (src == null || src.size < 0) return obj
+        if (obj == null || obj.size < 0) return src
+        val data = ByteArray(src.size + obj.size)
+        System.arraycopy(src, 0, data, 0, src.size)
+        System.arraycopy(obj, 0, data, src.size, obj.size)
+        return data
+    } /*w  w w  .jav  a  2  s  .  co m*/
+
+
 
     inner class LocalBinder : Binder() {
         val service: BluetoothLeService
@@ -306,7 +316,6 @@ class BluetoothLeService : Service() {
         characteristic: BluetoothGattCharacteristic,
         enabled: Boolean
     ) {
-        Logger.d("## setCharacteristicNotification")
         if (mBluetoothAdapter == null || mBluetoothGatt == null) {
             Log.w(TAG, "BluetoothAdapter not initialized")
             return
@@ -346,5 +355,8 @@ class BluetoothLeService : Service() {
         val UUID_HEART_RATE_MEASUREMENT =
             UUID.fromString(SampleGattAttributes.HEART_RATE_MEASUREMENT)
         val UUID_HM_RX_TX = UUID.fromString(SampleGattAttributes.HM_RX_TX)
+
+        val UUID_HM_RX = UUID.fromString(SampleGattAttributes.HM_RX)
+        val UUID_HM_TX = UUID.fromString(SampleGattAttributes.HM_TX)
     }
 }

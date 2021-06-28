@@ -63,6 +63,7 @@ class DeviceControlActivity : Activity() {
         }
 
         override fun onServiceDisconnected(componentName: ComponentName) {
+            Logger.d("## 서비스 끊어짐")
             mBluetoothLeService = null
         }
     }
@@ -98,45 +99,26 @@ class DeviceControlActivity : Activity() {
             Logger.d("## onReceive")
             val action = intent.action
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
+                Logger.d("## ACTION_GATT_CONNECTED")
                 mConnected = true
                 updateConnectionState(R.string.connected)
                 invalidateOptionsMenu()
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
+                Logger.d("## ACTION_GATT_DISCONNECTED")
                 mConnected = false
                 updateConnectionState(R.string.disconnected)
                 invalidateOptionsMenu()
                 clearUI()
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
+                Logger.d("## ACTION_GATT_SERVICES_DISCOVERED")
                 // Show all the supported services and characteristics on the user interface.
                 displayGattServices(mBluetoothLeService?.supportedGattServices)
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
 
                 Logger.d("## action ==> ${action}")
+                Logger.d("## read ==> ${intent.getByteArrayExtra(BluetoothLeService.EXTRA_DATA).size}")
 
-                Logger.d("## read ==> ${intent.getIntegerArrayListExtra(BluetoothLeService.EXTRA_DATA)}")
-                Logger.d("## read.size ==> ${intent.getIntegerArrayListExtra(BluetoothLeService.EXTRA_DATA).size}")
-                //Logger.d("## read ==> ${Integer.parseUnsignedInt(intent.getStringExtra(BluetoothLeService.EXTRA_DATA), 8)}")
-
-//                val bytes =
-//                    ConstantFunction.encodeToBase64(mBitmapArray.get(i).getUploadImageBitmap(), Bitmap.CompressFormat.JPEG, 100)
-//                ImageData
-                val result: ArrayList<Int> = intent.getIntegerArrayListExtra(BluetoothLeService.EXTRA_DATA)
-                val buffer: ByteBuffer = ByteBuffer.allocate(result.size)
-
-                for (byt in result) {
-                    buffer.put(byt.toByte())
-                }
-
-                // 버퍼, 넓이, 높이
-                // getBitmap(buffer, 0, 0)
-
-
-
-                intent.getIntegerArrayListExtra(BluetoothLeService.EXTRA_DATA).let {
-                    //binding.ivBleImage.setImageBitmap(toByteArray().toBitmap())
-                }
-
-
+                binding.ivBleImage.setImageBitmap(byteArrayToBitmap(intent.getByteArrayExtra(BluetoothLeService.EXTRA_DATA)))
                 displayData(intent.getStringExtra(BluetoothLeService.EXTRA_DATA))
             }
         }
@@ -279,33 +261,21 @@ class DeviceControlActivity : Activity() {
         val gattCharacteristicData = ArrayList<ArrayList<HashMap<String, String?>>>()
         mGattCharacteristics = ArrayList()
 
-//        for (gattService in gattServices) {
-//            val currentServiceData = HashMap<String, String>()
-//            uuid = gattService.uuid.toString()
-//            currentServiceData[LIST_NAME] = SampleGattAttributes.lookup(uuid, unknownServiceString)
-//
-//            // If the service exists for HM 10 Serial, say so.
-//            if (SampleGattAttributes.lookup(uuid, unknownServiceString) === "HM 10 Serial") {
-//                //isSerial.setText("Yes")
-//            } else {
-//                //isSerial.setText("No")
-//            }
-//            currentServiceData[LIST_UUID] = uuid
-//            //gattServiceData.add(currentServiceData)
-//
-//            // get characteristic when UUID matches RX/TX UUID
-//            characteristicTX = gattService.getCharacteristic(BluetoothLeService.UUID_HM_RX_TX)
-//            characteristicRX = gattService.getCharacteristic(BluetoothLeService.UUID_HM_RX_TX)
-//        }
-
         for (gattService in gattServices) {
             val currentServiceData = HashMap<String, String?>()
             uuid = gattService.uuid.toString()
             currentServiceData[LIST_NAME] = SampleGattAttributes.lookup(uuid, unknownServiceString)
             currentServiceData[LIST_UUID] = uuid
             gattServiceData.add(currentServiceData)
-            characteristicTX = gattService.getCharacteristic(BluetoothLeService.UUID_HM_RX_TX)
-            characteristicRX = gattService.getCharacteristic(BluetoothLeService.UUID_HM_RX_TX)
+
+            // HM-10
+             characteristicTX = gattService.getCharacteristic(BluetoothLeService.UUID_HM_RX_TX)
+             characteristicRX = gattService.getCharacteristic(BluetoothLeService.UUID_HM_RX_TX)
+
+            // ESP
+//            characteristicTX = gattService.getCharacteristic(BluetoothLeService.UUID_HM_TX)
+//            characteristicRX = gattService.getCharacteristic(BluetoothLeService.UUID_HM_RX)
+
             val gattCharacteristicGroupData = ArrayList<HashMap<String, String?>>()
             val gattCharacteristics = gattService.characteristics
             val charas = ArrayList<BluetoothGattCharacteristic>()
@@ -347,43 +317,11 @@ class DeviceControlActivity : Activity() {
         return intentFilter
     }
 
-    // extension function to convert byte array to bitmap
-    fun ByteArray.toBitmap(): Bitmap {
-        return BitmapFactory.decodeByteArray(this, 0, size)
+
+    fun byteArrayToBitmap(byteArray: ByteArray): Bitmap {
+        Logger.d("## byteArray.size ==> ${byteArray.size}")
+        return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
     }
-
-    // 버퍼 받아서 이미지뷰에 넣어보
-    private fun getBitmap(buffer: Buffer, width: Int, height: Int): Bitmap? {
-        buffer.rewind()
-        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        bitmap.copyPixelsFromBuffer(buffer)
-
-//        binding.ivBleImage.setImageBitmap(bitmap)
-
-        return bitmap
-
-    }
-
-    // 바이트어레이 합치
-    // 20개씪 들어오는걸 기존거와 계속 합친다 마지막 신호가 오기전까지..
-    // 다 합쳐졌을경우 바이트어레이를 액티비티에 넘기고
-    fun mergeByteData(src: ByteArray?, obj: ByteArray?): ByteArray? {
-        if (src == null || src.size < 0) return obj
-        if (obj == null || obj.size < 0) return src
-        val data = ByteArray(src.size + obj.size)
-        System.arraycopy(src, 0, data, 0, src.size)
-        System.arraycopy(obj, 0, data, src.size, obj.size)
-        return data
-    } /*w  w w  .jav  a  2  s  .  co m*/
-
-    fun byteArrayToBitmap(byteArray: ByteArray) : Bitmap {
-
-        var bitmap = BitmapFactory.decodeByteArray(byteArray, 0,byteArray.size)
-        // binding.ivBleImage.setImageBitmap(bitmap)
-        return bitmap
-    }
-
-
 
 
     // png로 변경 참고 사이트
