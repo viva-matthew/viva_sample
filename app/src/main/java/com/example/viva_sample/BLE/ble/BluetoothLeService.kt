@@ -24,8 +24,6 @@ class BluetoothLeService : Service() {
     private var isStream = true
     var org: ByteArray? = null
 
-    // Implements callback methods for GATT events that the app cares about.  For example,
-    // connection change and services discovered.
     private val mGattCallback: BluetoothGattCallback = object : BluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
             val intentAction: String
@@ -34,7 +32,6 @@ class BluetoothLeService : Service() {
                 mConnectionState = STATE_CONNECTED
                 broadcastUpdate(intentAction)
                 Log.i(TAG, "Connected to GATT server.")
-                // Attempts to discover services after successful connection.
                 Log.i(
                     TAG, "Attempting to start service discovery:" +
                             mBluetoothGatt!!.discoverServices()
@@ -83,7 +80,6 @@ class BluetoothLeService : Service() {
 
     private fun broadcastUpdate(action: String, characteristic: BluetoothGattCharacteristic) {
         val intent = Intent(action)
-
 
         // This is special handling for the Heart Rate Measurement profile.  Data parsing is
         // carried out as per profile specifications:

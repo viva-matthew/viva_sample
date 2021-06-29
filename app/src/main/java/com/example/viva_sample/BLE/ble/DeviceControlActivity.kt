@@ -27,31 +27,23 @@ class DeviceControlActivity : Activity() {
     val EXTRAS_DEVICE_NAME = "DEVICE_NAME"
     val EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS"
 
-    private var mConnectionState: TextView? = null
-    private var mDataField: TextView? = null
-    private var mDeviceName: String? = null
-    private var mDeviceAddress: String? = null
-    private var mGattServicesList: ExpandableListView? = null
-    private var mBluetoothLeService: BluetoothLeService? = null
-    private var mEtSendText: EditText? = null
-    private var mBtnSend: Button? = null
-    private var mSeekbar1: SeekBar? = null
-
-
-    private var mGattCharacteristics = ArrayList<ArrayList<BluetoothGattCharacteristic>>()
-    private var mConnected = false
-    private var mNotifyCharacteristic: BluetoothGattCharacteristic? = null
-
-    private var characteristicTX: BluetoothGattCharacteristic? = null
-    private var characteristicRX: BluetoothGattCharacteristic? = null
-
     private val LIST_NAME = "NAME"
     private val LIST_UUID = "UUID"
+
+    private var mDeviceName: String? = null
+    private var mDeviceAddress: String? = null
+
+    private var mBluetoothLeService: BluetoothLeService? = null
+    private var mGattCharacteristics = ArrayList<ArrayList<BluetoothGattCharacteristic>>()
+    private var mConnected = false
+
+    private var mNotifyCharacteristic: BluetoothGattCharacteristic? = null
+    private var characteristicTX: BluetoothGattCharacteristic? = null
+    private var characteristicRX: BluetoothGattCharacteristic? = null
 
     private val binding: ActivityDeviceControlBinding by lazy { DataBindingUtil.setContentView(this, R.layout.activity_device_control) }
 
 
-    // Code to manage Service lifecycle.
     private val mServiceConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(componentName: ComponentName, service: IBinder) {
             mBluetoothLeService = (service as BluetoothLeService.LocalBinder).service
@@ -124,11 +116,6 @@ class DeviceControlActivity : Activity() {
         }
     }
 
-    private fun clearUI() {
-        mGattServicesList!!.setAdapter(null as SimpleExpandableListAdapter?)
-        mDataField!!.setText(R.string.no_data)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_device_control)
@@ -139,29 +126,21 @@ class DeviceControlActivity : Activity() {
 
 
         // Sets up UI references.
-        (findViewById<View>(R.id.device_address) as TextView).text = mDeviceAddress
-        mGattServicesList = findViewById<View>(R.id.gatt_services_list) as ExpandableListView
-        mGattServicesList!!.setOnChildClickListener(servicesListClickListner)
-        mConnectionState = findViewById<View>(R.id.connection_state) as TextView
-        mDataField = findViewById<View>(R.id.data_value) as TextView
-
-        mBtnSend = findViewById<View>(R.id.btnSend) as Button
-        mEtSendText = findViewById<View>(R.id.etSendText) as EditText
-
+        binding.deviceAddress.text = mDeviceAddress
+        binding.gattServicesList.setOnChildClickListener(servicesListClickListner)
         actionBar.title = mDeviceName
         actionBar.setDisplayHomeAsUpEnabled(true)
 
         val gattServiceIntent = Intent(this, BluetoothLeService::class.java)
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE)
 
-        mBtnSend!!.setOnClickListener {
+        binding.btnSend.setOnClickListener {
             sendCommandToBLE("read\n")
         }
 
-        mSeekbar1 = findViewById<View>(R.id.seekbar1) as SeekBar
-        mSeekbar1!!.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        binding.seekbar1.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
-                sendDataToBLE(i)
+                //sendDataToBLE(i)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {
@@ -171,26 +150,6 @@ class DeviceControlActivity : Activity() {
             }
         })
     }
-
-    fun sendDataToBLE(str: Int) {
-        if (mConnected) {
-            characteristicTX?.setValue(str, BluetoothGattCharacteristic.FORMAT_UINT8, 0)
-
-            mBluetoothLeService!!.writeCharacteristic(characteristicTX)
-            characteristicRX?.let { mBluetoothLeService!!.setCharacteristicNotification(it, true) }
-
-
-        }
-    }
-
-    fun sendCommandToBLE(str: String) {
-        Logger.d("## sendCommandToBLE")
-        characteristicTX?.setValue(str)
-        mBluetoothLeService!!.writeCharacteristic(characteristicTX)
-        characteristicRX?.let { mBluetoothLeService!!.setCharacteristicNotification(it, true) }
-
-    }
-
 
     override fun onResume() {
         super.onResume()
@@ -211,44 +170,40 @@ class DeviceControlActivity : Activity() {
         mBluetoothLeService = null
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.gatt_services, menu)
-        if (mConnected) {
-            menu.findItem(R.id.menu_connect).isVisible = false
-            menu.findItem(R.id.menu_disconnect).isVisible = true
-        } else {
-            menu.findItem(R.id.menu_connect).isVisible = true
-            menu.findItem(R.id.menu_disconnect).isVisible = false
-        }
-        return true
+    private fun clearUI() {
+        binding.gattServicesList.setAdapter(null as SimpleExpandableListAdapter?)
+        binding.dataValue.setText(R.string.no_data)
     }
 
-    override fun onOptionsItemSelected(item: android.view.MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menu_connect -> {
-                mBluetoothLeService?.connect(mDeviceAddress)
-                return true
-            }
-            R.id.menu_disconnect -> {
-                mBluetoothLeService?.disconnect()
-                return true
-            }
-            android.R.id.home -> {
-                onBackPressed()
-                return true
-            }
+    private fun sendDataToBLE(str: Int) {
+        if (mConnected) {
+            characteristicTX?.setValue(str, BluetoothGattCharacteristic.FORMAT_UINT8, 0)
+
+            mBluetoothLeService!!.writeCharacteristic(characteristicTX)
+            characteristicRX?.let { mBluetoothLeService!!.setCharacteristicNotification(it, true) }
+
+
         }
-        return super.onOptionsItemSelected(item)
+    }
+
+    private fun sendCommandToBLE(str: String) {
+        Logger.d("## sendCommandToBLE")
+        characteristicTX?.setValue(str)
+        mBluetoothLeService!!.writeCharacteristic(characteristicTX)
+        characteristicRX?.let { mBluetoothLeService!!.setCharacteristicNotification(it, true) }
+
     }
 
 
     private fun updateConnectionState(resourceId: Int) {
-        runOnUiThread { mConnectionState!!.setText(resourceId) }
+        runOnUiThread {
+            binding.connectionState.setText(resourceId)
+        }
     }
 
     private fun displayData(data: String?) {
         if (data != null) {
-            mDataField!!.text = data
+            binding.dataValue.text = data
         }
     }
 
@@ -269,12 +224,12 @@ class DeviceControlActivity : Activity() {
             gattServiceData.add(currentServiceData)
 
             // HM-10
-             characteristicTX = gattService.getCharacteristic(BluetoothLeService.UUID_HM_RX_TX)
-             characteristicRX = gattService.getCharacteristic(BluetoothLeService.UUID_HM_RX_TX)
+//            characteristicTX = gattService.getCharacteristic(BluetoothLeService.UUID_HM_RX_TX)
+//            characteristicRX = gattService.getCharacteristic(BluetoothLeService.UUID_HM_RX_TX)
 
             // ESP
-//            characteristicTX = gattService.getCharacteristic(BluetoothLeService.UUID_HM_TX)
-//            characteristicRX = gattService.getCharacteristic(BluetoothLeService.UUID_HM_RX)
+            characteristicTX = gattService.getCharacteristic(BluetoothLeService.UUID_HM_TX)
+            characteristicRX = gattService.getCharacteristic(BluetoothLeService.UUID_HM_RX)
 
             val gattCharacteristicGroupData = ArrayList<HashMap<String, String?>>()
             val gattCharacteristics = gattService.characteristics
@@ -305,7 +260,8 @@ class DeviceControlActivity : Activity() {
             arrayOf(LIST_NAME, LIST_UUID),
             intArrayOf(android.R.id.text1, android.R.id.text2)
         )
-        mGattServicesList!!.setAdapter(gattServiceAdapter)
+        //mGattServicesList!!.setAdapter(gattServiceAdapter)
+        binding.gattServicesList.setAdapter(gattServiceAdapter)
     }
 
     private fun makeGattUpdateIntentFilter(): IntentFilter? {
@@ -321,6 +277,36 @@ class DeviceControlActivity : Activity() {
     fun byteArrayToBitmap(byteArray: ByteArray): Bitmap {
         Logger.d("## byteArray.size ==> ${byteArray.size}")
         return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.gatt_services, menu)
+        if (mConnected) {
+            menu.findItem(R.id.menu_connect).isVisible = false
+            menu.findItem(R.id.menu_disconnect).isVisible = true
+        } else {
+            menu.findItem(R.id.menu_connect).isVisible = true
+            menu.findItem(R.id.menu_disconnect).isVisible = false
+        }
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: android.view.MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_connect -> {
+                mBluetoothLeService?.connect(mDeviceAddress)
+                return true
+            }
+            R.id.menu_disconnect -> {
+                mBluetoothLeService?.disconnect()
+                return true
+            }
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 
