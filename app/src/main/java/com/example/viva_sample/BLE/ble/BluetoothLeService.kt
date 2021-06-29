@@ -9,6 +9,7 @@ import android.util.Log
 import com.orhanobut.logger.Logger
 import java.nio.ByteBuffer
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Service for managing connection and data communication with a GATT server hosted on a
@@ -21,17 +22,24 @@ class BluetoothLeService : Service() {
     private var mBluetoothGatt: BluetoothGatt? = null
     private var mConnectionState = STATE_DISCONNECTED
     private val photoByteList: ArrayList<Int> = arrayListOf()
-    private var isStream = true
+    //private var isStream = true
     var org: ByteArray? = null
 
     private val mGattCallback: BluetoothGattCallback = object : BluetoothGattCallback() {
+        override fun onMtuChanged(gatt: BluetoothGatt?, mtu: Int, status: Int) {
+            super.onMtuChanged(gatt, mtu, status)
+
+            Logger.d("## onMtuChanged ==> ${BluetoothGatt.GATT_SUCCESS}")
+        }
+
         override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
+            Logger.d("## onConnectionStateChange")
             val intentAction: String
             if (newState == BluetoothProfile.STATE_CONNECTED) {
                 intentAction = ACTION_GATT_CONNECTED
                 mConnectionState = STATE_CONNECTED
                 broadcastUpdate(intentAction)
-                Log.i(TAG, "Connected to GATT server.")
+                Logger.d("## Connected to GATT server.")
                 Log.i(
                     TAG, "Attempting to start service discovery:" +
                             mBluetoothGatt!!.discoverServices()
@@ -45,7 +53,9 @@ class BluetoothLeService : Service() {
         }
 
         override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
+            Logger.d("## onServicesDiscovered")
             if (status == BluetoothGatt.GATT_SUCCESS) {
+                gatt.requestMtu(259)
                 broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED)
             } else {
                 Log.w(
@@ -69,22 +79,26 @@ class BluetoothLeService : Service() {
             gatt: BluetoothGatt,
             characteristic: BluetoothGattCharacteristic
         ) {
+            //gatt.requestMtu(256)
             broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic)
         }
     }
 
     private fun broadcastUpdate(action: String) {
+        Logger.d("## broadcastUpdate1")
         val intent = Intent(action)
         sendBroadcast(intent)
     }
 
     private fun broadcastUpdate(action: String, characteristic: BluetoothGattCharacteristic) {
+        //Logger.d("## broadcastUpdate2")
         val intent = Intent(action)
 
         // This is special handling for the Heart Rate Measurement profile.  Data parsing is
         // carried out as per profile specifications:
         // http://developer.bluetooth.org/gatt/characteristics/Pages/CharacteristicViewer.aspx?u=org.bluetooth.characteristic.heart_rate_measurement.xml
-        if (UUID.fromString(SampleGattAttributes.HM_RX_TX) == characteristic.uuid && isStream) {
+//        if (UUID.fromString(SampleGattAttributes.HM_TX) == characteristic.uuid && isStream) {
+        //if (UUID.fromString(SampleGattAttributes.HM_TX) == characteristic.uuid) {
             val flag = characteristic.properties
             var format = -1
             if (flag and 0x01 != 0) {
@@ -93,50 +107,56 @@ class BluetoothLeService : Service() {
             } else {
                 format = BluetoothGattCharacteristic.FORMAT_UINT8
 
-
+                val currenctList : ArrayList<Int> = arrayListOf()
                 // 20개씩 전부 리스트에 담는다.
                 for (i in characteristic.value.indices) {
                     characteristic.getIntValue(format, i)
                     photoByteList.add(characteristic.getIntValue(format, i))
-
+                    currenctList.add(characteristic.getIntValue(format, i))
                 }
                 org = mergeByteData(org, characteristic.value)
                 Logger.d("## org ==> ${org?.size}")
-
-                // 스탑코드가 들어올 경우
-                var slice: ByteArray? = null
-
-                var lastValue = 217 // -39
-                var lastValue2 = 255 // -1
+                Logger.d("## currenctList.size ==> ${currenctList?.size}")
 
 
-                if (photoByteList[photoByteList.lastIndex] == 217 && photoByteList[photoByteList.lastIndex - 1] == 255 && characteristic.value.size < 20) {
-//                if (org?.let { org!![it.lastIndex] } == lastValue.toByte() && org?.let { org!![it.lastIndex-1] } == lastValue2.toByte()) {
+                // 스탑코드 자르고 넣을 변수
+//                var slice: ByteArray? = null
+
+                val lastValue = 217 // -39
+                val secondLastValue = 255 // -1
+
+
+//                if (photoByteList[photoByteList.lastIndex] == 217 && photoByteList[photoByteList.lastIndex - 1] == 255 && characteristic.value.size < 20) {
+                if (org?.let { org!![it.lastIndex] } == lastValue.toByte() && org?.let { org!![it.lastIndex - 1] } == secondLastValue.toByte()) {
                     Logger.d("## 마지막")
                     Logger.d("## photoByteList ==> ${photoByteList.size}")
                     Logger.d("## photoByteList ==> ${photoByteList[photoByteList.lastIndex]}")
-                    Logger.d("## photoByteList ==> ${photoByteList[photoByteList.lastIndex-1]}")
+                    Logger.d("## photoByteList ==> ${photoByteList[photoByteList.lastIndex - 1]}")
                     Logger.d("## org ==> ${org?.let { org!!.get(it.lastIndex) }}")
-                    Logger.d("## org ==> ${org?.get(org!!.lastIndex-1)}")
+                    Logger.d("## org ==> ${org?.get(org!!.lastIndex - 1)}")
 
-                    isStream = false
+//                    isStream = false
 
                     //slice = org?.lastIndex?.minus(1)?.let { Arrays.copyOfRange(org, 0, it) }!!
-                    slice = org?.let {
-                        Logger.d("## slice ==> ${it[it.lastIndex-2]}")
-                        Arrays.copyOfRange(org, 0, it.lastIndex-1)
+                    val slice: ByteArray? = org?.let {
+                        Logger.d("## slice ==> ${it[it.lastIndex - 2]}")
+                        Arrays.copyOfRange(org, 0, it.lastIndex - 1)
                     }
                     Logger.d("## slice ==> ${slice?.get(slice.lastIndex)}")
 
-                }
-                if (!isStream) {
                     intent.putExtra(EXTRA_DATA, slice)
                     sendBroadcast(intent)
+
                 }
+
+//                if (!isStream) {
+//                    intent.putExtra(EXTRA_DATA, slice)
+//                    sendBroadcast(intent)
+//                }
             }
 
 
-        }
+        //}
 //        else {
 //            // For all other profiles, writes the data formatted in HEX.
 //            val data = characteristic.value
@@ -159,9 +179,7 @@ class BluetoothLeService : Service() {
         System.arraycopy(src, 0, data, 0, src.size)
         System.arraycopy(obj, 0, data, src.size, obj.size)
         return data
-    } /*w  w w  .jav  a  2  s  .  co m*/
-
-
+    }
 
     inner class LocalBinder : Binder() {
         val service: BluetoothLeService
@@ -169,6 +187,7 @@ class BluetoothLeService : Service() {
     }
 
     override fun onBind(intent: Intent): IBinder {
+        Logger.d("## onBind")
         return mBinder
     }
 
@@ -283,8 +302,8 @@ class BluetoothLeService : Service() {
             Log.w(TAG, "BluetoothAdapter not initialized")
             return
         }
-        mBluetoothGatt!!.readCharacteristic(characteristic)
         Logger.d("## readCharacteristic")
+        mBluetoothGatt!!.readCharacteristic(characteristic)
     }
 
     /**
@@ -312,6 +331,7 @@ class BluetoothLeService : Service() {
         characteristic: BluetoothGattCharacteristic,
         enabled: Boolean
     ) {
+        Logger.d("## setCharacteristicNotification")
         if (mBluetoothAdapter == null || mBluetoothGatt == null) {
             Log.w(TAG, "BluetoothAdapter not initialized")
             return
@@ -356,3 +376,6 @@ class BluetoothLeService : Service() {
         val UUID_HM_TX = UUID.fromString(SampleGattAttributes.HM_TX)
     }
 }
+
+// mtu 응답 갯수
+// rx 특성2개 노티피랑 리드

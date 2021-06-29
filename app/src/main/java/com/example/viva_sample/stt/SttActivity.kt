@@ -112,9 +112,11 @@ class SttActivity : AppCompatActivity() {
         override fun onResults(results: Bundle) { // 말을 하면 ArrayList에 단어를 넣고 textView에 단어를 이어줍니다.
             Logger.d("## onResults")
             val matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-            for (i in matches.indices) {
+            if (matches != null) {
+                for (i in matches.indices) {
 
-                binding.tvSTT.text = matches[i]
+                    binding.tvSTT.text = matches[i]
+                }
             }
         }
 

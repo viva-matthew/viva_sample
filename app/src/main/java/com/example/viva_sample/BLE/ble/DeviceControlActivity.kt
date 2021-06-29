@@ -46,7 +46,9 @@ class DeviceControlActivity : Activity() {
 
     private val mServiceConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(componentName: ComponentName, service: IBinder) {
+            Logger.d("## 서비스 연결")
             mBluetoothLeService = (service as BluetoothLeService.LocalBinder).service
+
             if (!mBluetoothLeService?.initialize()!!) {
                 finish()
             }
@@ -151,25 +153,6 @@ class DeviceControlActivity : Activity() {
         })
     }
 
-    override fun onResume() {
-        super.onResume()
-        registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter())
-        if (mBluetoothLeService != null) {
-            val result: Boolean = mBluetoothLeService!!.connect(mDeviceAddress)
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        unregisterReceiver(mGattUpdateReceiver)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        unbindService(mServiceConnection)
-        mBluetoothLeService = null
-    }
-
     private fun clearUI() {
         binding.gattServicesList.setAdapter(null as SimpleExpandableListAdapter?)
         binding.dataValue.setText(R.string.no_data)
@@ -195,6 +178,25 @@ class DeviceControlActivity : Activity() {
     }
 
 
+    override fun onResume() {
+        super.onResume()
+        registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter())
+        if (mBluetoothLeService != null) {
+            val result: Boolean = mBluetoothLeService!!.connect(mDeviceAddress)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        unregisterReceiver(mGattUpdateReceiver)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unbindService(mServiceConnection)
+        mBluetoothLeService = null
+    }
+
     private fun updateConnectionState(resourceId: Int) {
         runOnUiThread {
             binding.connectionState.setText(resourceId)
@@ -208,6 +210,7 @@ class DeviceControlActivity : Activity() {
     }
 
     private fun displayGattServices(gattServices: List<BluetoothGattService>?) {
+        Logger.d("## displayGattServices")
         if (gattServices == null) return
         var uuid: String? = null
         val unknownServiceString = resources.getString(R.string.unknown_service)
@@ -224,12 +227,12 @@ class DeviceControlActivity : Activity() {
             gattServiceData.add(currentServiceData)
 
             // HM-10
-//            characteristicTX = gattService.getCharacteristic(BluetoothLeService.UUID_HM_RX_TX)
-//            characteristicRX = gattService.getCharacteristic(BluetoothLeService.UUID_HM_RX_TX)
+            //characteristicTX = gattService.getCharacteristic(BluetoothLeService.UUID_HM_RX_TX)
+            //characteristicRX = gattService.getCharacteristic(BluetoothLeService.UUID_HM_RX_TX)
 
             // ESP
-            characteristicTX = gattService.getCharacteristic(BluetoothLeService.UUID_HM_TX)
-            characteristicRX = gattService.getCharacteristic(BluetoothLeService.UUID_HM_RX)
+            characteristicTX = gattService.getCharacteristic(BluetoothLeService.UUID_HM_RX) // 요청
+            characteristicRX = gattService.getCharacteristic(BluetoothLeService.UUID_HM_TX) // 응답
 
             val gattCharacteristicGroupData = ArrayList<HashMap<String, String?>>()
             val gattCharacteristics = gattService.characteristics
@@ -260,7 +263,6 @@ class DeviceControlActivity : Activity() {
             arrayOf(LIST_NAME, LIST_UUID),
             intArrayOf(android.R.id.text1, android.R.id.text2)
         )
-        //mGattServicesList!!.setAdapter(gattServiceAdapter)
         binding.gattServicesList.setAdapter(gattServiceAdapter)
     }
 

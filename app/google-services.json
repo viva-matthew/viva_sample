@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "985259622996",
+    "project_id": "viva-sample",
+    "storage_bucket": "viva-sample.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:985259622996:android:fdd1bbede5fc4744f0a3c1",
+        "android_client_info": {
+          "package_name": "com.example.viva_sample"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "985259622996-ioegrql1ogup3iq5cgedubuolldu3ghb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMvrgpgzAoU2JWH3aADYJcx1eeMrYh-bQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "985259622996-ioegrql1ogup3iq5cgedubuolldu3ghb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
