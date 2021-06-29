@@ -19,7 +19,7 @@ class FireStoreViewModel(application: Application) : AndroidViewModel(applicatio
             "born" to 1815
         )
 
-        db.collection("users")
+        db.collection("rooms")
             .add(user)
             .addOnSuccessListener { documentReference ->
                 fireStoreMessage.value = documentReference.id
@@ -27,7 +27,48 @@ class FireStoreViewModel(application: Application) : AndroidViewModel(applicatio
             }
             .addOnFailureListener { e ->
                 fireStoreMessage.value = e.message
-                Logger.e("Error adding document ${e}")
+                Logger.e("Error adding document ==> ${e}")
+            }
+    }
+
+    fun selectCollection() {
+        Logger.d("## selectCollection")
+
+
+
+        db.collection("users")
+            .document("DEm0m3hv7G1XryhWRMVj") // 문서 조회
+//            .whereEqualTo("born", 18151) // where born = 18151
+            .get()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    // Document found in the offline cache
+                    val document = task.result
+                    Logger.d("## Cached document data ==> ${document?.data}")
+                } else {
+                    Logger.e("## Cached get failed:  ==> ${task.exception}")
+                }
+            }
+//            .addOnSuccessListener { result ->
+//                for (document in result) {
+//                    Logger.d("## DocumentSnapshot added with ID: ${document.id} => ${document.data}")
+//                }
+//            }
+            .addOnFailureListener { exception ->
+                Logger.e("## Error getting documents. ==> ${exception}")
+            }
+    }
+
+    fun deleteFirestore() {
+        Logger.d("## deleteFirestore")
+        db.collection("rooms").document("")
+            .delete()
+            .addOnSuccessListener {
+
+                Logger.d("## DocumentSnapshot successfully deleted!")
+            }
+            .addOnFailureListener { e ->
+                Logger.e("## Error deleting document ==> ${e}")
             }
     }
 }

@@ -29,12 +29,15 @@ class FireStoreActivity : AppCompatActivity() {
 
     private fun init() {
         binding.btnCreate.setOnClickListener { fireStoreViewModel.createCollection() }
-        binding.btnSelect.setOnClickListener { }
+        binding.btnSelect.setOnClickListener { fireStoreViewModel.selectCollection()}
+        binding.btnDelete.setOnClickListener { fireStoreViewModel.deleteFirestore() }
 
 
         fireStoreViewModel.fireStoreMessage.observe(this) {
             Toast.makeText(this, "컬렉션 아이디 ==> $it", Toast.LENGTH_LONG).show()
         }
+
+
     }
 
 }

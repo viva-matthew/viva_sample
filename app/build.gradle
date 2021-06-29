@@ -56,6 +56,7 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:28.2.0')
     implementation 'com.google.firebase:firebase-analytics-ktx' // 애널리틱스
     implementation 'com.google.firebase:firebase-firestore-ktx' // Fire Store
+    implementation 'com.google.firebase:firebase-database-ktx' // Realtime DB
 
     // by viewModels 사용하기위해 선언
     implementation "androidx.activity:activity-ktx:1.2.3"
