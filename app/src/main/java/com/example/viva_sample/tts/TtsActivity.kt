@@ -5,9 +5,10 @@ import android.speech.tts.TextToSpeech
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import com.example.viva_sample.R
+import com.example.viva_sample.databinding.ActivityTtsBinding
 import com.orhanobut.logger.Logger
-import xyz.arpith.blearduino.R
-import xyz.arpith.blearduino.databinding.ActivityTtsBinding
+
 import java.util.*
 
 class TtsActivity : AppCompatActivity(), TextToSpeech.OnInitListener {

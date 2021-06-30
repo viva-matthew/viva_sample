@@ -21,9 +21,10 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.viva_sample.R
 
 import com.orhanobut.logger.Logger
-import xyz.arpith.blearduino.R
+
 import java.util.*
 
 class DeviceScanActivity : ListActivity() {
@@ -39,7 +40,7 @@ class DeviceScanActivity : ListActivity() {
     private val SCAN_PERIOD = 20000L // 스캔 주기
 
 
-    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         Logger.d("## onCreate")
         super.onCreate(savedInstanceState)
@@ -50,9 +51,7 @@ class DeviceScanActivity : ListActivity() {
         bar!!.setBackgroundDrawable(ColorDrawable(Color.parseColor("#3F51B5")))
         val window = window
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-
-
-
+        
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) !== PackageManager.PERMISSION_GRANTED) {
 
             // Should we show an explanation?
@@ -62,7 +61,7 @@ class DeviceScanActivity : ListActivity() {
 
                 // No explanation needed, we can request the permission.
                 ActivityCompat.requestPermissions(
-                    this, arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION),
+                    this, arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION),
                     MY_PERMISSIONS_REQUEST_LOCATION
                 )
 
@@ -109,7 +108,7 @@ class DeviceScanActivity : ListActivity() {
         return true
     }
 
-    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_scan -> {
@@ -122,7 +121,7 @@ class DeviceScanActivity : ListActivity() {
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    
     override fun onResume() {
         super.onResume()
 
@@ -148,14 +147,14 @@ class DeviceScanActivity : ListActivity() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    
     override fun onPause() {
         super.onPause()
         scanLeDevice(false)
         mLeDeviceListAdapter.clear()
     }
 
-    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    
     override fun onListItemClick(l: ListView?, v: View?, position: Int, id: Long) {
         val device: BluetoothDevice = mLeDeviceListAdapter.getDevice(position)
         val intent = Intent(this, DeviceControlActivity::class.java)
@@ -171,7 +170,7 @@ class DeviceScanActivity : ListActivity() {
 
 
     // 스캔 실행 빛 분기 메소드
-    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    
     private fun scanLeDevice(enable: Boolean) {
         if (enable) {
             // 스캔 주기가 지나면 스캔을 중단함

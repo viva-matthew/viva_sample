@@ -5,11 +5,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import com.example.viva_sample.BLE.ble.DeviceScanActivity
+import com.example.viva_sample.databinding.ActivityMainBinding
 import com.example.viva_sample.firesotre.FireStoreActivity
 import com.example.viva_sample.stt.SttActivity
 import com.example.viva_sample.tts.TtsActivity
-import xyz.arpith.blearduino.R
-import xyz.arpith.blearduino.databinding.ActivityMainBinding
+
 
 class MainActivity : AppCompatActivity() {
     private val binding: ActivityMainBinding by lazy {

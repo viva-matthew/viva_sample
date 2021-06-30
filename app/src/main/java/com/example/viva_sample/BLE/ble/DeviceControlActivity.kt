@@ -13,9 +13,11 @@ import android.view.View
 import android.widget.*
 import android.widget.ExpandableListView.OnChildClickListener
 import androidx.databinding.DataBindingUtil
+import com.example.viva_sample.R
+import com.example.viva_sample.databinding.ActivityDeviceControlBinding
 import com.orhanobut.logger.Logger
-import xyz.arpith.blearduino.R
-import xyz.arpith.blearduino.databinding.ActivityDeviceControlBinding
+
+
 import java.nio.Buffer
 import java.nio.ByteBuffer
 import java.util.*

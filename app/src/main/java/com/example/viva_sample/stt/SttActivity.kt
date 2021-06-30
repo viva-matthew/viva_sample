@@ -11,17 +11,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
+import com.example.viva_sample.R
+import com.example.viva_sample.databinding.ActivitySttBinding
 import com.orhanobut.logger.Logger
-import xyz.arpith.blearduino.R
-import xyz.arpith.blearduino.databinding.ActivitySttBinding
+
 
 class SttActivity : AppCompatActivity() {
-    private val binding: ActivitySttBinding by lazy {
-        DataBindingUtil.setContentView(
-            this,
-            R.layout.activity_stt
-        )
-    }
+    private val binding: ActivitySttBinding by lazy { DataBindingUtil.setContentView(this, R.layout.activity_stt) }
 
     private val mRecognizer: SpeechRecognizer by lazy { SpeechRecognizer.createSpeechRecognizer(this) }
     private val PERMISSION = 1
@@ -37,7 +33,7 @@ class SttActivity : AppCompatActivity() {
                 PERMISSION
             )
         }
-
+//https://jwsoft91.tistory.com/160 ㅈㅐ작업
 
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
         intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, packageName)
