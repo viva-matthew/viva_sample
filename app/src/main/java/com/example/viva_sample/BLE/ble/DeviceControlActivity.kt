@@ -110,9 +110,9 @@ class DeviceControlActivity : Activity() {
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
 
                 Logger.d("## action ==> ${action}")
-                Logger.d("## read ==> ${intent.getByteArrayExtra(BluetoothLeService.EXTRA_DATA).size}")
+                Logger.d("## read ==> ${intent.getByteArrayExtra(BluetoothLeService.EXTRA_DATA)?.size}")
 
-                binding.ivBleImage.setImageBitmap(byteArrayToBitmap(intent.getByteArrayExtra(BluetoothLeService.EXTRA_DATA)))
+                binding.ivBleImage.setImageBitmap(intent.getByteArrayExtra(BluetoothLeService.EXTRA_DATA)?.let { byteArrayToBitmap(it) })
                 displayData(intent.getStringExtra(BluetoothLeService.EXTRA_DATA))
             }
         }
@@ -130,8 +130,8 @@ class DeviceControlActivity : Activity() {
         // Sets up UI references.
         binding.deviceAddress.text = mDeviceAddress
         binding.gattServicesList.setOnChildClickListener(servicesListClickListner)
-        actionBar.title = mDeviceName
-        actionBar.setDisplayHomeAsUpEnabled(true)
+        actionBar?.title = mDeviceName
+        actionBar?.setDisplayHomeAsUpEnabled(true)
 
         val gattServiceIntent = Intent(this, BluetoothLeService::class.java)
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE)

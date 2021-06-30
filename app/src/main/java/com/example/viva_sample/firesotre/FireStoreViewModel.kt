@@ -61,10 +61,10 @@ class FireStoreViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun deleteFirestore() {
         Logger.d("## deleteFirestore")
-        db.collection("rooms").document("")
+        db.collection("users").document("6MHZzX5dhxFPSs3CqGDf")
             .delete()
             .addOnSuccessListener {
-
+                fireStoreMessage.value = "삭제되었습니다."
                 Logger.d("## DocumentSnapshot successfully deleted!")
             }
             .addOnFailureListener { e ->

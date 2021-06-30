@@ -29,7 +29,7 @@ class FireStoreActivity : AppCompatActivity() {
 
     private fun init() {
         binding.btnCreate.setOnClickListener { fireStoreViewModel.createCollection() }
-        binding.btnSelect.setOnClickListener { fireStoreViewModel.selectCollection()}
+        binding.btnSelect.setOnClickListener { fireStoreViewModel.selectCollection() }
         binding.btnDelete.setOnClickListener { fireStoreViewModel.deleteFirestore() }
 
 

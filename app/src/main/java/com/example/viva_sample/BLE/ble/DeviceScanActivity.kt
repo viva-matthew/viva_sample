@@ -41,6 +41,7 @@ class DeviceScanActivity : ListActivity() {
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     override fun onCreate(savedInstanceState: Bundle?) {
+        Logger.d("## onCreate")
         super.onCreate(savedInstanceState)
 
 
