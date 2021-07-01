@@ -7,6 +7,7 @@ import androidx.databinding.DataBindingUtil
 import com.example.viva_sample.BLE.ble.DeviceScanActivity
 import com.example.viva_sample.databinding.ActivityMainBinding
 import com.example.viva_sample.firesotre.FireStoreActivity
+import com.example.viva_sample.naver.NaverMapActivity
 import com.example.viva_sample.stt.SttActivity
 import com.example.viva_sample.tts.TtsActivity
 
@@ -42,6 +43,11 @@ class MainActivity : AppCompatActivity() {
 
         binding.btnFireStore.setOnClickListener {
             val intent = Intent(this, FireStoreActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.btnNaver.setOnClickListener {
+            val intent = Intent(this, NaverMapActivity::class.java)
             startActivity(intent)
         }
     }

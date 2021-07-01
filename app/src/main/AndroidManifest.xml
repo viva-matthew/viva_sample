@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.viva_sample">
-<!--    <queries>-->
-<!--        <intent>-->
-<!--            <action android:name="android.speech.RecognitionService" />-->
-<!--        </intent>-->
-<!--    </queries>-->
-
+    <!-- <queries> -->
+    <!-- <intent> -->
+    <!-- <action android:name="android.speech.RecognitionService" /> -->
+    <!-- </intent> -->
+    <!-- </queries> -->
     <uses-feature
         android:name="android.hardware.bluetooth_le"
         android:required="true" />
@@ -19,19 +19,26 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
-        android:name="com.example.viva_sample.MyApplication"
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Viva_sample">
-        <activity android:name="com.example.viva_sample.firesotre.FireStoreActivity" />
-        <activity android:name="com.example.viva_sample.tts.TtsActivity" />
-        <activity android:name="com.example.viva_sample.stt.SttActivity" />
+        android:theme="@style/Theme.Viva_sample"
+        >
+
+        <meta-data
+            android:name="com.naver.maps.map.CLIENT_ID"
+            android:value="rtd3s7qb00" />
+
+        <activity android:name=".naver.NaverMapActivity"></activity>
+        <activity android:name=".firesotre.FireStoreActivity" />
+        <activity android:name=".tts.TtsActivity" />
+        <activity android:name=".stt.SttActivity" />
         <activity
-            android:name="com.example.viva_sample.BLE.ble.DeviceControlActivity"
+            android:name=".BLE.ble.DeviceControlActivity"
             android:theme="@android:style/Theme.Material.Light.DarkActionBar" />
-        <activity android:name="com.example.viva_sample.MainActivity">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -39,11 +46,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.viva_sample.BLE.ble.DeviceScanActivity"
+            android:name=".BLE.ble.DeviceScanActivity"
             android:theme="@android:style/Theme.Material.Light.DarkActionBar" />
 
         <service
-            android:name="com.example.viva_sample.BLE.ble.BluetoothLeService"
+            android:name=".BLE.ble.BluetoothLeService"
             android:enabled="true" />
     </application>
 
