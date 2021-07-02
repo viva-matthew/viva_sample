@@ -8,4 +8,6 @@ class BitmapUtil {
     fun ByteArray.toBitmap():Bitmap{
         return BitmapFactory.decodeByteArray(this,0,size)
     }
+
+
 }

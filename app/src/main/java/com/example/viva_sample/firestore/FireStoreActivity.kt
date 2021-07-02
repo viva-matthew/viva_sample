@@ -1,4 +1,4 @@
-package com.example.viva_sample.firesotre
+package com.example.viva_sample.firestore
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -7,9 +7,6 @@ import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import com.example.viva_sample.R
 import com.example.viva_sample.databinding.ActivityFireStoreBinding
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
-import com.orhanobut.logger.Logger
 
 class FireStoreActivity : AppCompatActivity() {
     private val binding: ActivityFireStoreBinding by lazy { DataBindingUtil.setContentView(this, R.layout.activity_fire_store) }

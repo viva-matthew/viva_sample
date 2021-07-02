@@ -49,6 +49,14 @@
 
         </Button>
 
+        <Button
+            android:id="@+id/btnRoom"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:text="room">
+
+        </Button>
+
 
     </LinearLayout>
 

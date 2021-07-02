@@ -1,14 +1,14 @@
-package com.example.viva_sample.firesotre
+package com.example.viva_sample.firestore
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.example.viva_sample.common.Config
 import com.orhanobut.logger.Logger
 
 
-class FireStoreViewModel(application: Application) : AndroidViewModel(application) {
+class FireStoreViewModel() : ViewModel() {
     private val db = Config.firestore
+
     var fireStoreMessage: MutableLiveData<String> = MutableLiveData()
 
     fun createCollection() {

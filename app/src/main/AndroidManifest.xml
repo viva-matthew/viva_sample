@@ -24,15 +24,15 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Viva_sample"
-        >
+        android:theme="@style/Theme.Viva_sample">
+        <activity android:name=".room.RoomActivity"></activity>
 
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="rtd3s7qb00" />
 
-        <activity android:name=".naver.NaverMapActivity"></activity>
-        <activity android:name=".firesotre.FireStoreActivity" />
+        <activity android:name=".naver.NaverMapActivity" />
+        <activity android:name=".firestore.FireStoreActivity" />
         <activity android:name=".tts.TtsActivity" />
         <activity android:name=".stt.SttActivity" />
         <activity
