@@ -45,7 +45,7 @@
         <activity android:name=".tts.TtsActivity" />
         <activity android:name=".stt.SttActivity" />
         <activity
-            android:name=".BLE.ble.DeviceControlActivity"
+            android:name=".ble.DeviceControlActivity"
             android:theme="@android:style/Theme.Material.Light.DarkActionBar" />
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -55,11 +55,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".BLE.ble.DeviceScanActivity"
+            android:name=".ble.DeviceScanActivity"
             android:theme="@android:style/Theme.Material.Light.DarkActionBar" />
 
         <service
-            android:name=".BLE.ble.BluetoothLeService"
+            android:name=".ble.BluetoothLeService"
             android:enabled="true" />
 
         <service android:name="org.eclipse.paho.android.service.MqttService">

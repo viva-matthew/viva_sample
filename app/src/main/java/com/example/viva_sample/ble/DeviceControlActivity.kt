@@ -1,4 +1,4 @@
-package com.example.viva_sample.BLE.ble
+package com.example.viva_sample.ble
 
 import android.app.Activity
 import android.bluetooth.BluetoothGattCharacteristic
@@ -9,7 +9,6 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.IBinder
 import android.view.Menu
-import android.view.View
 import android.widget.*
 import android.widget.ExpandableListView.OnChildClickListener
 import androidx.databinding.DataBindingUtil
@@ -18,8 +17,6 @@ import com.example.viva_sample.databinding.ActivityDeviceControlBinding
 import com.orhanobut.logger.Logger
 
 
-import java.nio.Buffer
-import java.nio.ByteBuffer
 import java.util.*
 import kotlin.collections.ArrayList
 

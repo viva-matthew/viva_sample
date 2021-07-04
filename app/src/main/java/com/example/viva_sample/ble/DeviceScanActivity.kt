@@ -1,4 +1,4 @@
-package com.example.viva_sample.BLE.ble
+package com.example.viva_sample.ble
 
 import android.Manifest
 import android.app.ListActivity

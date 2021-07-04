@@ -1,4 +1,4 @@
-package com.example.viva_sample.BLE.ble
+package com.example.viva_sample.ble
 
 import android.app.Service
 import android.bluetooth.*
@@ -7,7 +7,6 @@ import android.os.Binder
 import android.os.IBinder
 import android.util.Log
 import com.orhanobut.logger.Logger
-import java.nio.ByteBuffer
 import java.util.*
 import kotlin.collections.ArrayList
 
