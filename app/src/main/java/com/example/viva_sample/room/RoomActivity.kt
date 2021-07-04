@@ -31,11 +31,11 @@ class RoomActivity : AppCompatActivity() {
     }
 
     private fun initHospital() {
-//        roomViewModel.selectHosptal()?.observe(this, {
-//
-//            hospitalList.addAll(it)
-//            binding.rvResult.adapter?.notifyDataSetChanged()
-//        })
+        roomViewModel.selectHosptal()?.observe(this, {
+
+            hospitalList.addAll(it)
+            binding.rvResult.adapter?.notifyDataSetChanged()
+        })
 
         val roomAdapter = RoomAdapter(hospitalList)
         binding.rvResult.adapter = roomAdapter

@@ -11,7 +11,7 @@ class RoomViewModel(application: Application) : AndroidViewModel(application) {
     private val db = AppDatabase.getInstance(application)
     private val mExecutor: Executor = Executors.newSingleThreadExecutor()
 
-//    fun selectHosptal(): LiveData<List<HospitalEntity>>? {
-//        return db?.hospitalDao()?.selectHospital()
-//    }
+    fun selectHosptal(): LiveData<List<HospitalEntity>>? {
+        return db?.hospitalDao()?.selectHospital()
+    }
 }
