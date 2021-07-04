@@ -3,61 +3,78 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context=".MainActivity">
+        android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/btnBLE"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:text="BLE">
-
-        </Button>
-
-        <Button
-            android:id="@+id/btnSTT"
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:text="STT">
-
-        </Button>
-
-        <Button
-            android:id="@+id/btnTTS"
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:text="TTS">
-
-        </Button>
-
-        <Button
-            android:id="@+id/btnFireStore"
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:text="FireStore">
-
-        </Button>
-
-        <Button
-            android:id="@+id/btnNaver"
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:text="NAVER">
-
-        </Button>
-
-        <Button
-            android:id="@+id/btnRoom"
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:text="room">
-
-        </Button>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            tools:context=".MainActivity">
 
 
-    </LinearLayout>
+            <Button
+                android:id="@+id/btnBLE"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:text="BLE">
+
+            </Button>
+
+            <Button
+                android:id="@+id/btnSTT"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:text="STT">
+
+            </Button>
+
+            <Button
+                android:id="@+id/btnTTS"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:text="TTS">
+
+            </Button>
+
+            <Button
+                android:id="@+id/btnFireStore"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:text="FireStore">
+
+            </Button>
+
+            <Button
+                android:id="@+id/btnNaver"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:text="NAVER">
+
+            </Button>
+
+            <Button
+                android:id="@+id/btnRoom"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:text="room">
+
+            </Button>
+
+            <Button
+                android:id="@+id/btnMqtt"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:text="mqtt">
+
+            </Button>
+
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
 
 </layout>

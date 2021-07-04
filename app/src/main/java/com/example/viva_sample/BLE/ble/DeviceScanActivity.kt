@@ -10,7 +10,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
@@ -18,7 +17,6 @@ import android.widget.BaseAdapter
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.viva_sample.R
@@ -225,7 +223,7 @@ class DeviceScanActivity : ListActivity() {
 
             if (view == null) {
                 view =
-                    LayoutInflater.from(viewGroup.context).inflate(R.layout.listitem_device, null)
+                    LayoutInflater.from(viewGroup.context).inflate(R.layout.item_device, null)
                 viewHolder = ViewHolder()
                 viewHolder.deviceAddress = view.findViewById<View>(R.id.device_address) as TextView
                 viewHolder.deviceName = view.findViewById<View>(R.id.device_name) as TextView
