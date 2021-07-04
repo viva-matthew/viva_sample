@@ -4,7 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
-import com.example.viva_sample.ble.ble.DeviceScanActivity
+import com.example.viva_sample.ble.DeviceScanActivity
 import com.example.viva_sample.databinding.ActivityMainBinding
 import com.example.viva_sample.firestore.FireStoreActivity
 import com.example.viva_sample.mqtt.MqttActivity
