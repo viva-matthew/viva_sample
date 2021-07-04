@@ -18,6 +18,14 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
+
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -25,7 +33,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.Viva_sample">
-        <activity android:name=".room.RoomActivity"></activity>
+        <activity android:name=".mqtt.MqttActivity"></activity>
+        <activity android:name=".room.RoomActivity" />
 
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
@@ -52,6 +61,11 @@
         <service
             android:name=".BLE.ble.BluetoothLeService"
             android:enabled="true" />
+
+        <service android:name="org.eclipse.paho.android.service.MqttService">
+        </service>
+
+
     </application>
 
 </manifest>
