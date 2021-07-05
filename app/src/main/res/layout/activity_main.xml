@@ -70,6 +70,14 @@
 
             </Button>
 
+            <Button
+                android:id="@+id/btnLottie"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:text="lottie">
+
+            </Button>
+
 
         </LinearLayout>
 

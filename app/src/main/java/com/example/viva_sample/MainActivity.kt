@@ -7,6 +7,7 @@ import androidx.databinding.DataBindingUtil
 import com.example.viva_sample.ble.DeviceScanActivity
 import com.example.viva_sample.databinding.ActivityMainBinding
 import com.example.viva_sample.firestore.FireStoreActivity
+import com.example.viva_sample.lottie.LottieActivity
 import com.example.viva_sample.mqtt.MqttActivity
 import com.example.viva_sample.naver.NaverMapActivity
 import com.example.viva_sample.room.RoomActivity
@@ -60,6 +61,11 @@ class MainActivity : AppCompatActivity() {
 
         binding.btnMqtt.setOnClickListener {
             val intent = Intent(this, MqttActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.btnLottie.setOnClickListener {
+            val intent = Intent(this, LottieActivity::class.java)
             startActivity(intent)
         }
 

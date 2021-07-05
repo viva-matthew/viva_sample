@@ -50,7 +50,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     // Util ========================================================================================
-    // Log                         https://github.com/orhanobut/logger
+    // Log
     implementation 'com.orhanobut:logger:2.2.0'
 
     // Firebase
@@ -81,12 +81,8 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
     testImplementation "androidx.room:room-testing:$room_version"
-    // optional - RxJava support for Room
 
-
-
-
-    // REST API를 효율적으로 사용   https://github.com/square/retrofit
+    // REST API 라이브러리
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.squareup.okhttp3:okhttp:3.14.9'
@@ -94,4 +90,10 @@ dependencies {
     //MQTT
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.0'
     implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
+
+    // UI&UX =======================================================================================
+
+    // 로띠 애니메이션
+    implementation 'com.airbnb.android:lottie:3.7.0'
+
 }

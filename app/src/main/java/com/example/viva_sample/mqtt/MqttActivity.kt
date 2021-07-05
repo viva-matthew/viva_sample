@@ -28,6 +28,8 @@ class MqttActivity : AppCompatActivity() {
 
     //private val mqttClient = MqttClient("tcp://localhost:1883", MqttClient.generateClientId(), null)
     private val mqttClient = MqttAndroidClient(this, "tcp://broker.hivemq.com:1883", MqttClient.generateClientId())
+    //private val mqttClient = MqttAndroidClient(this, "tcp://192.168.50.36:1883", MqttClient.generateClientId())
+
     private val TOPIC = "MATTHEW"
     private lateinit var mqttAdapter: MqttAdapter
 

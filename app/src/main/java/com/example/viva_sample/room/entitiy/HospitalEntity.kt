@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "HOSPITAL")
-class HospitalEntity(
+data class HospitalEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "hospital_id", index = true)
     var hospitalId: Long = 0,

@@ -9,10 +9,9 @@ import com.example.viva_sample.room.entitiy.HospitalEntity
 import com.taeyoung.gooddoctor.feature.hospital.model.Hospital
 
 // AppDatabase.kt
-@Database(entities = arrayOf(HospitalEntity::class), version = 1, exportSchema = false)
+@Database(entities = [HospitalEntity::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun hospitalDao(): HospitalDao
-    // TODO 룸 안되고있ㅇ므 ㅡㅡ
     companion object {
         private var INSTANCE: AppDatabase? = null
 
@@ -22,7 +21,7 @@ abstract class AppDatabase : RoomDatabase() {
                     INSTANCE = Room.databaseBuilder(
                         context.applicationContext,
                         AppDatabase::class.java,
-                        "bookmarkdraw22er.db"
+                        "viva_sample.db"
 
                     )
                         .fallbackToDestructiveMigration() // 마이그레이션 처리안해도 됌
