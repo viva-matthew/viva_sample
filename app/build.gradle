@@ -58,6 +58,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx' // 애널리틱스
     implementation 'com.google.firebase:firebase-firestore-ktx' // Fire Store
     implementation 'com.google.firebase:firebase-database-ktx' // Realtime DB
+    implementation 'com.google.firebase:firebase-messaging-ktx' // FCM
 
     // by viewModels 사용하기위해 선언
     implementation "androidx.activity:activity-ktx:1.2.3"

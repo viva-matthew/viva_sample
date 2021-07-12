@@ -9,12 +9,18 @@
             name="item"
             type="com.example.viva_sample.room.entitiy.HospitalEntity" />
     </data>
-
+    
     <FrameLayout
         android:id="@+id/flBookmark"
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:layout_marginLeft="5dp">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            
+        </Button>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

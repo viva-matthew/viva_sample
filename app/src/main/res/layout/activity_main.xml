@@ -78,6 +78,14 @@
 
             </Button>
 
+            <Button
+                android:id="@+id/btnFCM"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:text="FCM">
+
+            </Button>
+
 
         </LinearLayout>
 
