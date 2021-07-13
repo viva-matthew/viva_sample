@@ -13,7 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  * Retrofit 설정 및 객체 선언 클래스
  */
 object RetrofitClient {
-    private val apiService: RetrofitApi
+    val apiService: RetrofitApi
 
     init {
         val builder = OkHttpClient.Builder()
