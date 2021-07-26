@@ -36,6 +36,8 @@
         android:theme="@style/Theme.Viva_sample">
         <activity android:name=".realtimedb.RealtimeDbActivity"></activity>
         <activity android:name=".fcm.PushActivity" />
+        <activity android:name=".papgo.PapagoActivity"></activity>
+        <activity android:name=".fcm.PushActivity" />
         <activity android:name=".lottie.LottieActivity" />
         <activity android:name=".mqtt.MqttActivity" />
         <activity android:name=".room.RoomActivity" />
@@ -66,6 +68,7 @@
             android:name=".ble.BluetoothLeService"
             android:enabled="true" />
         <service android:name="org.eclipse.paho.android.service.MqttService" />
+
         <service
             android:name=".fcm.MyFirebaseMessagingService"
             android:exported="false">
