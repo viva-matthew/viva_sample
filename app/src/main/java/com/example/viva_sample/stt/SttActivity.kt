@@ -27,6 +27,7 @@ class SttActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
 
         if (Build.VERSION.SDK_INT >= 23) { // 퍼미션 체크
+            Logger.d("## 퍼미션체크")
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(Manifest.permission.INTERNET, Manifest.permission.RECORD_AUDIO),
@@ -55,6 +56,7 @@ class SttActivity : AppCompatActivity() {
 
 
     private fun recognitionListener() = object : RecognitionListener {
+
         override fun onReadyForSpeech(params: Bundle?) =
             Toast.makeText(this@SttActivity, "음성인식 시작", Toast.LENGTH_SHORT).show()
 
