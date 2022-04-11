@@ -11,18 +11,14 @@ import com.example.viva_sample.firestore.FireStoreActivity
 import com.example.viva_sample.lottie.LottieActivity
 import com.example.viva_sample.mqtt.MqttActivity
 import com.example.viva_sample.naver.NaverMapActivity
+import com.example.viva_sample.realtimedb.RealtimeDbActivity
 import com.example.viva_sample.room.RoomActivity
 import com.example.viva_sample.stt.SttActivity
 import com.example.viva_sample.tts.TtsActivity
 
 
 class MainActivity : AppCompatActivity() {
-    private val binding: ActivityMainBinding by lazy {
-        DataBindingUtil.setContentView(
-            this,
-            R.layout.activity_main
-        )
-    }
+    private val binding: ActivityMainBinding by lazy { DataBindingUtil.setContentView(this, R.layout.activity_main) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +43,11 @@ class MainActivity : AppCompatActivity() {
 
         binding.btnFireStore.setOnClickListener {
             val intent = Intent(this, FireStoreActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.btnRealtimeDB.setOnClickListener {
+            val intent = Intent(this, RealtimeDbActivity::class.java)
             startActivity(intent)
         }
 

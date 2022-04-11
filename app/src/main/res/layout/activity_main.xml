@@ -46,6 +46,14 @@
             </Button>
 
             <Button
+                android:id="@+id/btnRealtimeDB"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:text="RealtimeDB">
+
+            </Button>
+
+            <Button
                 android:id="@+id/btnNaver"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
